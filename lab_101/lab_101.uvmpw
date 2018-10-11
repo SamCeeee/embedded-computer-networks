@@ -13,7 +13,6 @@
 
   <project>
     <PathAndName>.\2_blinky_with_shu_libraries\mdk-arm\blinky_with_libraries.uvprojx</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
@@ -24,6 +23,7 @@
 
   <project>
     <PathAndName>.\4_pushbuttons\mdk-arm\pushbuttons.uvprojx</PathAndName>
+    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
