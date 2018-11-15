@@ -24,8 +24,8 @@
 // specify a welcome message
 const char * welcome_message[2] = 
 {
-  "*     Hello LCD World!     *",
-  "*      Welcome to SHU      *"
+  "*     Hello sonny jim!     *",
+  "*     Welcome to Uni!     *"
 };
 
 // CODE
