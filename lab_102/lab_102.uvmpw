@@ -18,7 +18,6 @@
   <project>
     <PathAndName>.\3_lcd_temperature_display\mdk-arm\lcd_temperature_display.uvprojx</PathAndName>
     <NodeIsActive>1</NodeIsActive>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
