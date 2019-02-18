@@ -19,7 +19,6 @@
 #include "pinmappings.h"
 #include "clock.h"
 #include "random_numbers.h"
-#include "gpio.h"
 
 // RTOS DEFINES
 
@@ -32,22 +31,23 @@ osThreadDef(data_thread, osPriorityNormal, 1, 0);
 osMailQDef(mail_box, 16, mail_t);
 osMailQId  mail_box;
 
-// HARDWARE DEFINES
-
-// led is on PI 1 (this is the inbuilt led)
-gpio_pin_t led1 = {PI_1, GPIOI, GPIO_PIN_1};
+// set up the blink queue
+osMailQDef(blink_box, 5, blink_t);
+osMailQId  blink_box;
 
 // THREAD INITIALISATION
 
 // create the data generation thread
 int init_data_thread(void)
 {
-  // initialize peripherals (i.e. the led and random number generator) here
-  init_gpio(led1, OUTPUT);
+  // initialize random number generator
   init_random();
   
   // create the mailbox
   mail_box = osMailCreate(osMailQ(mail_box), NULL);
+	
+	// create the blinkbox
+  blink_box = osMailCreate(osMailQ(blink_box), NULL);
   
   // create the thread and get its task id
   tid_data_thread = osThreadCreate(osThread(data_thread), NULL);
@@ -68,28 +68,41 @@ void data_thread(void const *argument)
 {
   // set up our counter
   uint32_t i = 0;
+	int toggle = 0;
   
   // infinite loop generating our fake data (one set of samples per second)
-  // we also toggle the led so we can see what is going on ...
   while(1)
   {
     // create our mail (i.e. the message container)   
-    mail_t* mail = (mail_t*) osMailAlloc(mail_box, osWaitForever);    
+    mail_t* mail = (mail_t*) osMailAlloc(mail_box, osWaitForever);
+		
+		// create our blink (i.e. the message container)   
+    blink_t* blink = (blink_t*) osMailAlloc(blink_box, osWaitForever);
     
     // get a random number 
     float random = get_random_float();
-    
-    // toggle led
-    toggle_gpio(led1);
     
     // generate our fake data
     i++;
     mail->counter = i;
     mail->current = (1.0f / (random * i)); 
     mail->voltage = (5.0f / (random * i));
+		
+		// make that blinky
+		if (toggle == 1)
+		{
+			toggle = 0;
+			blink->onoff = 1;
+		}
+		else
+		{
+			toggle = 1;
+			blink->onoff = 0;
+		}
     
-    // put the data in the mail box and wait for one second
+    // put the data in the boxes and wait for one second
     osMailPut(mail_box, mail);
+		osMailPut(blink_box, blink);
     osDelay(1000);
   }
 } 

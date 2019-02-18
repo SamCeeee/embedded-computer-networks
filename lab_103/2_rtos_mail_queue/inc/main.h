@@ -27,4 +27,10 @@ typedef struct
 } 
 mail_t;
 
+typedef struct 
+{
+  int     onoff;  
+} 
+blink_t;
+
 #endif // MAIN_H
